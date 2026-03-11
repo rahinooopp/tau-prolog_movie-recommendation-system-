@@ -4,7 +4,7 @@ AI-Powered Movie Recommender (Expert System)
 A 100% Client-Side Expert System for movie recommendations, built using Prolog for logical inference and Tau Prolog for seamless web browser integration.
  Preview
 
-(Add your project screenshot here by replacing the link below)
+
 
  Features
 
@@ -44,4 +44,5 @@ recommend(Person, Movie) :- likes(Person, Genre), genre(Movie, Genre).
 % Count total number of movies recursively
 count_movies([], 0).
 count_movies([_|Tail], Count) :- count_movies(Tail, TailCount), Count is TailCount + 1.
+
 
