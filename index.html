@@ -1,0 +1,467 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Movie Recommender Pro</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e272e; color: #d2dae2; text-align: center; padding: 40px; margin: 0; }
+        h1 { color: #f1c40f; margin-bottom: 10px; }
+        p { color: #808e9b; margin-bottom: 30px; font-size: 18px; }
+        .btn-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
+        button { background-color: #0fb9b1; color: white; border: none; padding: 15px 25px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        button:hover { background-color: #2bcbba; transform: translateY(-2px); }
+        #results-container { background-color: #2c3e50; padding: 30px; border-radius: 12px; max-width: 600px; margin: 0 auto; min-height: 200px; box-shadow: 0 8px 15px rgba(0,0,0,0.5); text-align: left;}
+        #results-container h3 { margin-top: 0; color: #0fb9b1; border-bottom: 2px solid #34495e; padding-bottom: 10px; }
+        .movie-item { font-size: 18px; margin: 10px 0; padding: 10px; background-color: #34495e; border-radius: 6px; color: #ffdd59; border-left: 4px solid #f1c40f; }
+        .loading { color: #f39c12; font-style: italic; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/tau-prolog@0.3.2/modules/core.js"></script>
+</head>
+<body>
+
+    <h1>🎬 Prolog Movie Recommender</h1>
+    <p>AI-Powered Cinematic Choices based on Logic Programming</p>
+
+    <div class="btn-group">
+        <button onclick="runQuery('masterpiece(Movie).', '🏆 Masterpieces')">🏆 Masterpieces</button>
+        <button onclick="runQuery('high_rating(Movie).', '⭐ High Rated')">⭐ High Rated</button>
+        <button onclick="runQuery('epic_movie(Movie).', '⏳ Epic (Long)')">⏳ Epic (Long)</button>
+        <button onclick="runQuery('short_movie(Movie).', '⏱️ Short Movies')">⏱️ Short Movies</button>
+    </div>
+
+    <div id="results-container">
+        <h3 id="result-title">Select a category above to see recommendations...</h3>
+        <div id="movie-list"></div>
+    </div>
+
+    <script>
+        // إعداد بيئة برولوج (Setup Prolog session)
+        var session = pl.create();
+
+        // كود برولوج الخاص بك بالكامل (Your exact Prolog code)
+        var prologCode = `
+            %drama
+            film('The Green Mile','Frank Darabont',1999,'drama', 'others', 188,'USA','Tom Hanks',8.7,719).
+            film('Bang Bang! You''re Dead!', 'Guy Ferland', 2002, 'drama', 'others', 87, 'Hungary', 'Ben Foster', 7.7, 16).
+            film('Dogville', 'Lars von Trier', 2003, 'drama', 'others', 178, 'Denmark', 'Nicole Kidman', 7.7, 45).
+            film('Detachment', 'Tony Kaye', 2011, 'drama', 'others', 100, 'USA', 'Adrien Brody', 7.9, 30).
+            film('Schindler''s List', 'Steven Spielberg', 1993, 'drama', 'others', 195, 'USA', 'Liam Neeson', 8.4, 259).
+            film('Requiem for a Dream ', 'Darren Aronofsky', 2000, 'drama', 'others', 102, 'USA', 'Jared Leto', 7.9, 520).
+            film('Biutiful', 'Alejandro Gonzalez Inarritu', 2010, 'drama', 'others', 148, 'Spain', 'Javier Bardem', 7.6, 12).
+            film('Black Swan', 'Darren Aronofsky', 2010, 'drama', 'others', 108, 'USA', 'Natalie Portman', 7.7, 248).
+            film('Gladiator', 'Ridley Scott', 2000, 'drama', 'others', 155, 'USA', 'Russell Crowe', 8.1, 552).
+            film('Day of the Wacko', 'Marek Koterski', 2002, 'drama', 'others', 123, 'Poland', 'Marek Kondrat', 7.8, 438).
+            film('The Pianist', 'Roman Polanski', 2002, 'drama', 'others', 150, 'Germany', 'Adrien Brody', 8.3, 410).
+
+            %comedy
+            film('Sexmission', 'Juliusz Machulski', 1984, 'comedy', 'others', 118, 'Poland', 'Jerzy Stuhr', 7.9, 420).
+            film('Forrest Gump', 'Robert Zemeckis', 1994, 'comedy', 'others', 144, 'USA', 'Tom Hanks', 8.6, 697).
+            film('The Hangover', 'Todd Phillips', 2009, 'comedy', 'others', 100, 'USA', 'Bradley Cooper', 7.3, 537).
+            film('The Untouchables', 'Olivier Nakache', 2011, 'comedy', 'others', 112, 'France', 'Francois Cluzet', 8.7, 393).
+            film('The Truman Show', 'Peter Weir', 1998, 'comedy', 'others', 103, 'USA', 'Jim Carrey', 7.4, 383).
+            film('Kiler', 'Juliusz Machulski', 1997, 'comedy', 'others', 104, 'Poland', 'Cezary Pazura', 7.7, 315).
+            film('Home Alone', 'Chris Columbus', 1990, 'comedy', 'others', 103, 'USA', 'Macaulay Culkin', 7.1, 297).
+            film('Teddy Bear', 'Stanislaw Bareja', 1980, 'comedy', 'others', 111, 'Poland', 'Stanislaw Tym', 7.8, 261).
+            film('The Devil Wears Prada', 'David Frankel', 2006, 'comedy', 'others', 109, 'USA', 'Meryl Streep', 6.9, 227).
+            film('How I Unleashed World War II', 'Tadeusz Chmielewski', 1969, 'comedy', 'others', 236, 'Poland', 'Marian Kociniak', 7.9, 195).
+
+            %adventure
+            film('The Lord of the Rings: The Fellowship of the Ring', 'Peter Jackson', 2001, 'adventure', 'fantasy', 178, 'New Zealand', 'Elijah Wood', 8.1, 503).
+            film('Sherlock Holmes', 'Guy Ritchie', 2009, 'adventure', 'family', 128, 'UK', 'Robert Downey Jr', 7.8, 317).
+            film('Harry Potter and the Philosopher''s Stone', 'Chris Columbus', 2001, 'adventure', 'fantasy', 152, 'UK', 'Daniel Radcliffe', 7.4, 269).
+            film('The Hobbit: An Unexpected Journey', 'Peter Jackson', 2012, 'adventure', 'fantasy', 169, 'New Zealand', 'Martin Freeman', 7.7, 269).
+            film('Pirates of the Caribbean: Dead Man''s Chest', 'Gore Verbinski', 2006, 'adventure', 'fantasy', 150, 'USA', 'Johnny Depp', 7.8, 295).
+            film('The Matrix', 'Andy Wachowski', 1999, 'adventure', 'scifi', 136, 'USA', 'Keanu Reeves', 7.6, 629).
+            film('Back to the Future', 'Robert Zemeckis', 1985, 'adventure', 'scifi', 116, 'USA', 'Michael J. Fox', 7.3, 265).
+            film('In Desert and Wilderness', 'Gavin Hood', 2001, 'adventure', 'family', 110, 'Poland', 'Karolina Sawka', 5.6, 48).
+            film('The Witcher', 'Marek Brodzki', 2001, 'adventure', 'fantasy', 130, 'Poland', 'Michal Zebrowski', 3.9, 37).
+            film('Star Wars: Episode IV - A New Hope', 'George Lucas', 1977, 'adventure', 'scifi', 121, 'USA', 'Mark Hamill', 8.0, 199).
+
+            %thriller
+            film('The Silence of the Lambs', 'Jonathan Demme', 1991, 'thriller', 'others', 118, 'USA', 'Anthony Hopkins', 8.2, 474).
+            film('The Da Vinci Code', 'Ron Howard', 2006, 'thriller', 'others', 149, 'USA', 'Tom Hanks', 6.6, 447).
+            film('The Sixth Sense', 'M. Night Shyamalan', 1999, 'thriller', 'others', 107, 'USA', 'Bruce Willis', 7.9, 482).
+            film('Fight Club', 'David Fincher', 1999, 'thriller', 'others', 139, 'UK', 'Brad Pitt', 8.3, 426).
+            film('Se7en', 'David Fincher', 1995, 'thriller', 'others', 127, 'USA', 'Morgan Freeman', 8.3, 409).
+            film('Shutter Island', 'Martin Scorsese', 2010, 'thriller', 'others', 138, 'USA', 'Leonardo Di Caprio', 8.1, 374).
+            film('The Devil''s Advocate', 'Taylor Hackford', 1997, 'thriller', 'others', 144, 'UK', 'Keanu Reeves', 8.0, 317).
+            film('Suicide Room', 'Jan Komasa', 2011, 'thriller', 'others', 117, 'Poland', 'Jakub Gierszal', 6.5, 223).
+            film('American Psycho', 'Mary Harron', 2000, 'thriller', 'others', 101, 'USA', 'Christian Bale', 7.3, 105).
+            film('The Others', 'Alejandro Amenabar', 2001, 'thriller', 'others', 101, 'Spain', 'Nicole Kidman', 7.4, 166).
+
+            %animation
+            film('Shrek', 'Andrew Adamson', 2001, 'animation', 'others', 90, 'USA', 'Mike Myers', 7.8, 604).
+            film('Ice Age', 'Chris Wedge', 2002, 'animation', 'others', 81, 'USA', 'Cezary Pazura', 7.6, 359).
+            film('The Lion King', 'Rob Minkoff', 1994, 'animation', 'others', 89, 'USA', 'Matthew Broderick', 8.3, 381).
+            film('Madagaskar', 'Tom McGrath', 2005, 'animation', 'others', 86, 'USA', 'Ben Stiller', 7.5, 290).
+            film('Up', 'Pete Docter', 2009, 'animation', 'others', 96, 'USA', 'Edward Asner', 7.4, 161).
+            film('Finding Nemo', 'Andrew Stanton', 2003, 'animation', 'others', 100, 'Australia', 'Alexander Gould', 7.1, 126).
+            film('Toy Story', 'John Lasseter', 1995, 'animation', 'others', 80, 'USA', 'Tom Hanks', 7.4, 124).
+            film('Space Jam', 'Joe Pytka', 1996, 'animation', 'others', 88, 'USA', 'Michael Jordan', 6.9, 100).
+            film('South Park', 'Trey Parker', 1999, 'animation', 'others', 81, 'USA', 'Trey Parker', 7.2, 59).
+            film('Tarzan', 'Chris Buck', 1999, 'animation', 'others', 88, 'USA', 'Tony Goldwyn', 7.4, 42).
+
+            %romance
+            film('Chocolat', 'Lasse Hallstrom', 2000, 'romance', 'others', 117, 'UK', 'Juliette Binoche', 7.5, 164).
+            film('Step Up', 'Anne Fletcher', 2006, 'romance', 'others', 104, 'USA', 'Channing Tatum', 7.0, 174).
+            film('About Time', 'Richard Curtis', 2013, 'romance', 'others', 119, 'UK', 'Domhnall Gleeson', 7.6, 100).
+            film('500 Days of Summer', 'Marc Webb', 2009, 'romance', 'others', 95, 'USA', 'Joseph Gordon-Levitt', 7.2, 99).
+            film('Something''s Gotta Give', 'Nancy Meyers', 2003, 'romance', 'others', 128, 'USA', 'Jack Nicholson', 7.0, 102).
+            film('Amélie', 'Jean-Pierre Jeunet', 2001, 'romance', 'others', 129, 'France', 'Audrey Tautou', 7.6, 203).
+            film('Love Actually', 'Richard Curtis', 2003, 'romance', 'others', 135, 'UK', 'Colin Firth', 7.7, 173).
+            film('Bridget Jones''s Diary', 'Sharon Maguire', 2001, 'romance', 'others', 97, 'UK', 'Renee Zellweger', 6.9, 204).
+            film('Just Love Me', 'Ryszard Zatorski', 2006, 'romance', 'others', 98, 'Poland', 'Agnoszka Grochowska', 5.8, 137).
+            film('Nigdy w zyciu!', 'Ryszard Zatorski', 2004, 'romance', 'others', 100, 'Poland', 'Danuta Stenka', 6.2, 129).
+
+            %horror
+            film('The Shining', 'Stanley Kubrick', 1980, 'horror', 'psychopaths', 146, 'USA', 'Jack Nicholson', 7.9, 293).
+            film('I Am Legend', 'Francis Lawrence', 2007, 'horror', 'monsters', 101, 'Australia', 'Will Smith', 7.5, 344).
+            film('Interview with the Vampire', 'Neil Jordan', 1994, 'horror', 'monsters', 123, 'USA', 'Brad Pitt', 7.8, 243).
+            film('Alien', 'Ridley Scott', 1979, 'horror', 'monsters', 117, 'USA', 'Sigourney Weaver', 7.9, 211).
+            film('The Ring', 'Gore Verbinski', 2002, 'horror', 'ghosts', 115, 'USA', 'Naomi Watts', 7.0, 173).
+            film('Saw', 'James Wan', 2004, 'horror', 'psychopaths', 103, 'Australia', 'Tobin Bell', 6.7, 172).
+            film('Final Destination', 'James Wong', 2000, 'horror', 'others', 98, 'Canada', 'Devon Sawa', 6.6, 158).
+            film('The Ninth Gate', 'Roman Polanski', 1999, 'horror', 'others', 133, 'Francja', 'Johnny Depp', 7.3, 148).
+            film('The Conjuring', 'James Wan', 2013, 'horror', 'ghosts', 112, 'USA', 'Vera Farmiga', 7.4, 116).
+            film('The Orphanage', 'Juan Antonio Bayona', 2007, 'horror', 'ghosts', 105, 'Spain', 'Belen Rueda', 7.0, 119).
+            film('The Rite', 'Mikael Hafstrom', 2011, 'horror', 'ghosts', 114, 'USA', 'Anthony Hopkins', 6.8, 84).
+
+            %actors
+            actress('Nicole Kidman').
+            actress('Natalie Portman').
+            actress('Meryl Streep').
+            actress('Karolina Sawka').
+            actress('Juliette Binoche').
+            actress('Channing Tatum').
+            actress('Audrey Tautou').
+            actress('Renee Zellweger').
+            actress('Agnieszka Grochowska').
+            actress('Danuta Stenka').
+            actress('Sigourney Weaver').
+            actress('Naomi Watts').
+            actress('Vera Farmiga').
+            actress('Belen Rueda').
+            actor(X) :- \\+ actress(X).
+
+            % Rules
+            movie(Title) :- film(Title, _, _, _, _, _, _, _, _, _).
+            genre(Movie, Genre) :- film(Movie, _, _, Genre, _, _, _, _, _, _).
+            rating(Movie, Value) :- film(Movie, _, _, _, _, _, _, _, Value, _).
+            high_rating(Movie) :- rating(Movie, Value), Value >= 8.0.
+            released_after(Movie, YearLimit) :- film(Movie, _, Year, _, _, _, _, _, _, _), Year > YearLimit.
+            short_movie(Movie) :- film(Movie, _, _, _, _, Duration, _, _, _, _), Duration < 100.
+            long_movie(Title, MinDuration) :- film(Title, _, _, _, _, Duration, _, _, _, _), Duration > MinDuration.
+            classic_film(Title, MaxYear) :- film(Title, _, Year, _, _, _, _, _, _, _), Year =< MaxYear.
+            top_film(MinRating, Title) :- film(Title, _, _, _, _, _, _, _, Rating, _), Rating >= MinRating.
+            director_movies(Director, List) :- findall(Title, film(Title, Director, _, _, _, _, _, _, _, _), List).
+            female_lead_movies(List) :- findall(Title, (film(Title, _, _, _, _, _, _, Lead, _, _), actress(Lead)), List).
+            popular_movies(MinVotes, List) :- findall(Title, (film(Title, _, _, _, _, _, _, _, _, Votes), Votes >= MinVotes), List).
+            
+            total_duration([], 0).
+            total_duration([Title|Tail], Total) :- film(Title, _, _, _, _, Duration, _, _, _, _), total_duration(Tail, RestTotal), Total is Duration + RestTotal.
+            
+            count_movies([], 0).
+            count_movies([_|Tail], Count) :- count_movies(Tail, TailCount), Count is TailCount + 1.
+            
+            popular_movie(Movie) :- film(Movie, _, _, _, _, _, _, _, _, Votes), Votes > 300.
+            masterpiece(Movie) :- high_rating(Movie), popular_movie(Movie).
+            epic_movie(Movie) :- film(Movie, _, _, _, _, Duration, _, _, _, _), Duration > 150.
+        `;
+
+        // تحميل الكود (Load code)
+        session.consult(prologCode);
+
+        // دالة تشغيل الاستعلامات (Query execution function)
+        function runQuery(queryStr, titleText) {
+            let container = document.getElementById('movie-list');
+            document.getElementById('result-title').innerText = titleText;
+            container.innerHTML = "<span class='loading'>Searching Prolog database...</span>";
+            
+            session.query(queryStr);
+            
+            let found = false;
+            let htmlOutput = "";
+
+            // استخراج النتائج
+            session.answers(x => {
+                if (x && x !== false) {
+                    found = true;
+                    let movieName = x.links.Movie.id.replace(/['"]+/g, ''); 
+                    htmlOutput += `<div class='movie-item'>🎬 ${movieName}</div>`;
+                }
+            });
+
+            // تأخير بسيط لإعطاء تأثير البحث
+            setTimeout(() => {
+                if(found) {
+                    container.innerHTML = htmlOutput;
+                } else {
+                    container.innerHTML = "<div class='movie-item'>❌ No movies found for this category.</div>";
+                }
+            }, 300);
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Movie Recommender Pro</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e272e; color: #d2dae2; text-align: center; padding: 20px; margin: 0; }
+        h1 { color: #f1c40f; margin-bottom: 5px; }
+        p { color: #808e9b; margin-bottom: 25px; font-size: 16px; }
+        
+        .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; max-width: 900px; margin: 0 auto; }
+        .panel { background-color: #2c3e50; padding: 20px; border-radius: 10px; flex: 1; min-width: 300px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .panel h3 { color: #0fb9b1; margin-top: 0; border-bottom: 1px solid #34495e; padding-bottom: 10px; }
+        
+        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 15px; }
+        button { background-color: #0fb9b1; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 6px; transition: 0.3s; }
+        button:hover { background-color: #2bcbba; }
+        
+        .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #34495e; padding: 10px; border-radius: 6px; }
+        input, select { padding: 8px; border-radius: 4px; border: 1px solid #7f8c8d; background: #ecf0f1; width: 50%; }
+        .input-group button { background-color: #f39c12; width: 35%; }
+        .input-group button:hover { background-color: #f1c40f; color: black; }
+
+        #results-container { background-color: #2c3e50; padding: 20px; border-radius: 10px; max-width: 900px; margin: 20px auto; min-height: 150px; text-align: left; }
+        .movie-item { font-size: 16px; margin: 8px 0; padding: 10px; background-color: #34495e; border-radius: 6px; color: #ffdd59; border-left: 4px solid #f1c40f; }
+        .loading { color: #f39c12; font-style: italic; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/tau-prolog@0.3.2/modules/core.js"></script>
+</head>
+<body>
+
+    <h1> Prolog Movie Recommender</h1>
+   
+
+    <div class="container">
+        <div class="panel">
+            <h3> Quick Filters</h3>
+            <div class="btn-group">
+                <button onclick="runQuery('masterpiece(Movie).', ' Masterpieces')"> Masterpieces</button>
+                <button onclick="runQuery('high_rating(Movie).', ' High Rated')"> High Rated</button>
+                <button onclick="runQuery('epic_movie(Movie).', ' Epic (Long)')"> Epic (Long)</button>
+                <button onclick="runQuery('short_movie(Movie).', ' Short Movies')"> Short Movies</button>
+                <button onclick="runQuery('popular_movie(Movie).', ' Popular (>300 votes)')"> Popular</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3> Custom Search</h3>
+            
+            <div class="input-group">
+                <select id="genre-select">
+                    <option value="drama">Drama</option>
+                    <option value="comedy">Comedy</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="thriller">Thriller</option>
+                    <option value="animation">Animation</option>
+                    <option value="romance">Romance</option>
+                    <option value="horror">Horror</option>
+                </select>
+                <button onclick="searchGenre()">Search Genre</button>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="director-input" placeholder="e.g. Peter Jackson">
+                <button onclick="searchDirector()">Search Director</button>
+            </div>
+
+            <div class="input-group">
+                <input type="number" id="year-input" placeholder="Released After (e.g. 2005)">
+                <button onclick="searchYear()">Search Year</button>
+            </div>
+            
+            <div class="input-group">
+                <input type="number" id="rating-input" step="0.1" placeholder="Min Rating (e.g. 7.5)">
+                <button onclick="searchRating()">Top Films</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results-container">
+        <h3 id="result-title" style="color:#0fb9b1; border-bottom: 1px solid #34495e; padding-bottom:5px;">Results will appear here...</h3>
+        <div id="movie-list"></div>
+    </div>
+
+    <script>
+        var session = pl.create();
+
+        // ---------------------------------------------------------
+        // كود برولوج الخاص بك (Your Prolog Code)
+        // ---------------------------------------------------------
+        var prologCode = `
+            %drama
+            film('The Green Mile','Frank Darabont',1999,'drama', 'others', 188,'USA','Tom Hanks',8.7,719).
+            film('Bang Bang! You''re Dead!', 'Guy Ferland', 2002, 'drama', 'others', 87, 'Hungary', 'Ben Foster', 7.7, 16).
+            film('Dogville', 'Lars von Trier', 2003, 'drama', 'others', 178, 'Denmark', 'Nicole Kidman', 7.7, 45).
+            film('Detachment', 'Tony Kaye', 2011, 'drama', 'others', 100, 'USA', 'Adrien Brody', 7.9, 30).
+            film('Schindler''s List', 'Steven Spielberg', 1993, 'drama', 'others', 195, 'USA', 'Liam Neeson', 8.4, 259).
+            film('Requiem for a Dream ', 'Darren Aronofsky', 2000, 'drama', 'others', 102, 'USA', 'Jared Leto', 7.9, 520).
+            film('Biutiful', 'Alejandro Gonzalez Inarritu', 2010, 'drama', 'others', 148, 'Spain', 'Javier Bardem', 7.6, 12).
+            film('Black Swan', 'Darren Aronofsky', 2010, 'drama', 'others', 108, 'USA', 'Natalie Portman', 7.7, 248).
+            film('Gladiator', 'Ridley Scott', 2000, 'drama', 'others', 155, 'USA', 'Russell Crowe', 8.1, 552).
+            film('Day of the Wacko', 'Marek Koterski', 2002, 'drama', 'others', 123, 'Poland', 'Marek Kondrat', 7.8, 438).
+            film('The Pianist', 'Roman Polanski', 2002, 'drama', 'others', 150, 'Germany', 'Adrien Brody', 8.3, 410).
+
+            %comedy
+            film('Sexmission', 'Juliusz Machulski', 1984, 'comedy', 'others', 118, 'Poland', 'Jerzy Stuhr', 7.9, 420).
+            film('Forrest Gump', 'Robert Zemeckis', 1994, 'comedy', 'others', 144, 'USA', 'Tom Hanks', 8.6, 697).
+            film('The Hangover', 'Todd Phillips', 2009, 'comedy', 'others', 100, 'USA', 'Bradley Cooper', 7.3, 537).
+            film('The Untouchables', 'Olivier Nakache', 2011, 'comedy', 'others', 112, 'France', 'Francois Cluzet', 8.7, 393).
+            film('The Truman Show', 'Peter Weir', 1998, 'comedy', 'others', 103, 'USA', 'Jim Carrey', 7.4, 383).
+            film('Kiler', 'Juliusz Machulski', 1997, 'comedy', 'others', 104, 'Poland', 'Cezary Pazura', 7.7, 315).
+            film('Home Alone', 'Chris Columbus', 1990, 'comedy', 'others', 103, 'USA', 'Macaulay Culkin', 7.1, 297).
+            film('Teddy Bear', 'Stanislaw Bareja', 1980, 'comedy', 'others', 111, 'Poland', 'Stanislaw Tym', 7.8, 261).
+            film('The Devil Wears Prada', 'David Frankel', 2006, 'comedy', 'others', 109, 'USA', 'Meryl Streep', 6.9, 227).
+            film('How I Unleashed World War II', 'Tadeusz Chmielewski', 1969, 'comedy', 'others', 236, 'Poland', 'Marian Kociniak', 7.9, 195).
+
+            %adventure
+            film('The Lord of the Rings: The Fellowship of the Ring', 'Peter Jackson', 2001, 'adventure', 'fantasy', 178, 'New Zealand', 'Elijah Wood', 8.1, 503).
+            film('Sherlock Holmes', 'Guy Ritchie', 2009, 'adventure', 'family', 128, 'UK', 'Robert Downey Jr', 7.8, 317).
+            film('Harry Potter and the Philosopher''s Stone', 'Chris Columbus', 2001, 'adventure', 'fantasy', 152, 'UK', 'Daniel Radcliffe', 7.4, 269).
+            film('The Hobbit: An Unexpected Journey', 'Peter Jackson', 2012, 'adventure', 'fantasy', 169, 'New Zealand', 'Martin Freeman', 7.7, 269).
+            film('Pirates of the Caribbean: Dead Man''s Chest', 'Gore Verbinski', 2006, 'adventure', 'fantasy', 150, 'USA', 'Johnny Depp', 7.8, 295).
+            film('The Matrix', 'Andy Wachowski', 1999, 'adventure', 'scifi', 136, 'USA', 'Keanu Reeves', 7.6, 629).
+            film('Back to the Future', 'Robert Zemeckis', 1985, 'adventure', 'scifi', 116, 'USA', 'Michael J. Fox', 7.3, 265).
+            film('In Desert and Wilderness', 'Gavin Hood', 2001, 'adventure', 'family', 110, 'Poland', 'Karolina Sawka', 5.6, 48).
+            film('The Witcher', 'Marek Brodzki', 2001, 'adventure', 'fantasy', 130, 'Poland', 'Michal Zebrowski', 3.9, 37).
+            film('Star Wars: Episode IV - A New Hope', 'George Lucas', 1977, 'adventure', 'scifi', 121, 'USA', 'Mark Hamill', 8.0, 199).
+
+            %thriller
+            film('The Silence of the Lambs', 'Jonathan Demme', 1991, 'thriller', 'others', 118, 'USA', 'Anthony Hopkins', 8.2, 474).
+            film('The Da Vinci Code', 'Ron Howard', 2006, 'thriller', 'others', 149, 'USA', 'Tom Hanks', 6.6, 447).
+            film('The Sixth Sense', 'M. Night Shyamalan', 1999, 'thriller', 'others', 107, 'USA', 'Bruce Willis', 7.9, 482).
+            film('Fight Club', 'David Fincher', 1999, 'thriller', 'others', 139, 'UK', 'Brad Pitt', 8.3, 426).
+            film('Se7en', 'David Fincher', 1995, 'thriller', 'others', 127, 'USA', 'Morgan Freeman', 8.3, 409).
+            film('Shutter Island', 'Martin Scorsese', 2010, 'thriller', 'others', 138, 'USA', 'Leonardo Di Caprio', 8.1, 374).
+            film('The Devil''s Advocate', 'Taylor Hackford', 1997, 'thriller', 'others', 144, 'UK', 'Keanu Reeves', 8.0, 317).
+            film('Suicide Room', 'Jan Komasa', 2011, 'thriller', 'others', 117, 'Poland', 'Jakub Gierszal', 6.5, 223).
+            film('American Psycho', 'Mary Harron', 2000, 'thriller', 'others', 101, 'USA', 'Christian Bale', 7.3, 105).
+            film('The Others', 'Alejandro Amenabar', 2001, 'thriller', 'others', 101, 'Spain', 'Nicole Kidman', 7.4, 166).
+
+            %animation
+            film('Shrek', 'Andrew Adamson', 2001, 'animation', 'others', 90, 'USA', 'Mike Myers', 7.8, 604).
+            film('Ice Age', 'Chris Wedge', 2002, 'animation', 'others', 81, 'USA', 'Cezary Pazura', 7.6, 359).
+            film('The Lion King', 'Rob Minkoff', 1994, 'animation', 'others', 89, 'USA', 'Matthew Broderick', 8.3, 381).
+            film('Madagaskar', 'Tom McGrath', 2005, 'animation', 'others', 86, 'USA', 'Ben Stiller', 7.5, 290).
+            film('Up', 'Pete Docter', 2009, 'animation', 'others', 96, 'USA', 'Edward Asner', 7.4, 161).
+            film('Finding Nemo', 'Andrew Stanton', 2003, 'animation', 'others', 100, 'Australia', 'Alexander Gould', 7.1, 126).
+            film('Toy Story', 'John Lasseter', 1995, 'animation', 'others', 80, 'USA', 'Tom Hanks', 7.4, 124).
+            film('Space Jam', 'Joe Pytka', 1996, 'animation', 'others', 88, 'USA', 'Michael Jordan', 6.9, 100).
+            film('South Park', 'Trey Parker', 1999, 'animation', 'others', 81, 'USA', 'Trey Parker', 7.2, 59).
+            film('Tarzan', 'Chris Buck', 1999, 'animation', 'others', 88, 'USA', 'Tony Goldwyn', 7.4, 42).
+
+            %romance
+            film('Chocolat', 'Lasse Hallstrom', 2000, 'romance', 'others', 117, 'UK', 'Juliette Binoche', 7.5, 164).
+            film('Step Up', 'Anne Fletcher', 2006, 'romance', 'others', 104, 'USA', 'Channing Tatum', 7.0, 174).
+            film('About Time', 'Richard Curtis', 2013, 'romance', 'others', 119, 'UK', 'Domhnall Gleeson', 7.6, 100).
+            film('500 Days of Summer', 'Marc Webb', 2009, 'romance', 'others', 95, 'USA', 'Joseph Gordon-Levitt', 7.2, 99).
+            film('Something''s Gotta Give', 'Nancy Meyers', 2003, 'romance', 'others', 128, 'USA', 'Jack Nicholson', 7.0, 102).
+            film('Amélie', 'Jean-Pierre Jeunet', 2001, 'romance', 'others', 129, 'France', 'Audrey Tautou', 7.6, 203).
+            film('Love Actually', 'Richard Curtis', 2003, 'romance', 'others', 135, 'UK', 'Colin Firth', 7.7, 173).
+            film('Bridget Jones''s Diary', 'Sharon Maguire', 2001, 'romance', 'others', 97, 'UK', 'Renee Zellweger', 6.9, 204).
+            film('Just Love Me', 'Ryszard Zatorski', 2006, 'romance', 'others', 98, 'Poland', 'Agnoszka Grochowska', 5.8, 137).
+            film('Nigdy w zyciu!', 'Ryszard Zatorski', 2004, 'romance', 'others', 100, 'Poland', 'Danuta Stenka', 6.2, 129).
+
+            %horror
+            film('The Shining', 'Stanley Kubrick', 1980, 'horror', 'psychopaths', 146, 'USA', 'Jack Nicholson', 7.9, 293).
+            film('I Am Legend', 'Francis Lawrence', 2007, 'horror', 'monsters', 101, 'Australia', 'Will Smith', 7.5, 344).
+            film('Interview with the Vampire', 'Neil Jordan', 1994, 'horror', 'monsters', 123, 'USA', 'Brad Pitt', 7.8, 243).
+            film('Alien', 'Ridley Scott', 1979, 'horror', 'monsters', 117, 'USA', 'Sigourney Weaver', 7.9, 211).
+            film('The Ring', 'Gore Verbinski', 2002, 'horror', 'ghosts', 115, 'USA', 'Naomi Watts', 7.0, 173).
+            film('Saw', 'James Wan', 2004, 'horror', 'psychopaths', 103, 'Australia', 'Tobin Bell', 6.7, 172).
+            film('Final Destination', 'James Wong', 2000, 'horror', 'others', 98, 'Canada', 'Devon Sawa', 6.6, 158).
+            film('The Ninth Gate', 'Roman Polanski', 1999, 'horror', 'others', 133, 'Francja', 'Johnny Depp', 7.3, 148).
+            film('The Conjuring', 'James Wan', 2013, 'horror', 'ghosts', 112, 'USA', 'Vera Farmiga', 7.4, 116).
+            film('The Orphanage', 'Juan Antonio Bayona', 2007, 'horror', 'ghosts', 105, 'Spain', 'Belen Rueda', 7.0, 119).
+            film('The Rite', 'Mikael Hafstrom', 2011, 'horror', 'ghosts', 114, 'USA', 'Anthony Hopkins', 6.8, 84).
+
+            % Rules
+            movie(Title) :- film(Title, _, _, _, _, _, _, _, _, _).
+            genre(Movie, Genre) :- film(Movie, _, _, Genre, _, _, _, _, _, _).
+            rating(Movie, Value) :- film(Movie, _, _, _, _, _, _, _, Value, _).
+            high_rating(Movie) :- rating(Movie, Value), Value >= 8.0.
+            released_after(Movie, YearLimit) :- film(Movie, _, Year, _, _, _, _, _, _, _), Year > YearLimit.
+            short_movie(Movie) :- film(Movie, _, _, _, _, Duration, _, _, _, _), Duration < 100.
+            long_movie(Title, MinDuration) :- film(Title, _, _, _, _, Duration, _, _, _, _), Duration > MinDuration.
+            classic_film(Title, MaxYear) :- film(Title, _, Year, _, _, _, _, _, _, _), Year =< MaxYear.
+            top_film(MinRating, Title) :- film(Title, _, _, _, _, _, _, _, Rating, _), Rating >= MinRating.
+            popular_movie(Movie) :- film(Movie, _, _, _, _, _, _, _, _, Votes), Votes > 300.
+            masterpiece(Movie) :- high_rating(Movie), popular_movie(Movie).
+            epic_movie(Movie) :- film(Movie, _, _, _, _, Duration, _, _, _, _), Duration > 150.
+        `;
+
+        session.consult(prologCode);
+
+        // ---------------------------------------------------------
+        // دوال ربط الواجهة بكود برولوج (Linking UI to Prolog)
+        // ---------------------------------------------------------
+        
+        function searchGenre() {
+            let genre = document.getElementById("genre-select").value;
+            runQuery(`genre(Movie, '${genre}').`, `🎭 Movies in Genre: ${genre}`);
+        }
+
+        function searchDirector() {
+            let director = document.getElementById("director-input").value.trim();
+            if(!director) return alert("Please enter a director's name!");
+            // نستخدم حقيقة film مباشرة للبحث بدلاً من القوائم لتسهيل عرضها على الشاشة
+            runQuery(`film(Movie, '${director}', _, _, _, _, _, _, _, _).`, `🎬 Directed by: ${director}`);
+        }
+
+        function searchYear() {
+            let year = document.getElementById("year-input").value;
+            if(!year) return alert("Please enter a year!");
+            runQuery(`released_after(Movie, ${year}).`, `📅 Released After: ${year}`);
+        }
+
+        function searchRating() {
+            let minRating = document.getElementById("rating-input").value;
+            if(!minRating) return alert("Please enter a minimum rating!");
+            runQuery(`top_film(${minRating}, Movie).`, `⭐ Top Films (Rating >= ${minRating})`);
+        }
+
+        // الدالة الرئيسية الموحدة التي تقوم بتشغيل أي استعلام وتطبع النتيجة
+        function runQuery(queryStr, titleText) {
+            let container = document.getElementById('movie-list');
+            document.getElementById('result-title').innerText = titleText;
+            container.innerHTML = "<span class='loading'>Searching Prolog database...</span>";
+            
+            session.query(queryStr);
+            
+            let found = false;
+            let htmlOutput = "";
+
+            session.answers(x => {
+                if (x && x !== false) {
+                    found = true;
+                    // استخراج المتغير Movie أو Title من الرد 
+                    let variableName = x.links.Movie ? 'Movie' : (x.links.Title ? 'Title' : null);
+                    if(variableName) {
+                        let movieName = x.links[variableName].id.replace(/['"]+/g, ''); 
+                        htmlOutput += `<div class='movie-item'>🎬 ${movieName}</div>`;
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                if(found) {
+                    container.innerHTML = htmlOutput;
+                } else {
+                    container.innerHTML = "<div class='movie-item' style='border-color: #e74c3c; color:#e74c3c'>❌ No movies found for your search.</div>";
+                }
+            }, 300);
+        }
+    </script>
+</body>
+</html>
