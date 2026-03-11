@@ -26,28 +26,7 @@ Web Middleware: Tau Prolog (JavaScript Prolog Interpreter).
 
 Frontend: HTML5, CSS3, Vanilla JavaScript.
 
- How to Run
 
-This project requires no installation and no local servers!
-
-Clone the repository:
-
-git clone [https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
-
-
-Navigate to the project folder.
-
-Simply open movies.html (or index.html) in any modern web browser (Chrome, Firefox, Edge).
-
-Enjoy the magic! 
-
- Under the Hood (Prolog Logic)
-
-Here is a glimpse of how the logic engine thinks:
-
-1. Data Representation (Facts):
-
-film('The Matrix', 'Andy Wachowski', 1999, 'adventure', 'scifi', 136, 'USA', 'Keanu Reeves', 7.6, 629).
 
 
 2. Logical Rules (Inference):
@@ -65,3 +44,4 @@ recommend(Person, Movie) :- likes(Person, Genre), genre(Movie, Genre).
 % Count total number of movies recursively
 count_movies([], 0).
 count_movies([_|Tail], Count) :- count_movies(Tail, TailCount), Count is TailCount + 1.
+
